@@ -28,12 +28,28 @@ async function run() {
 
     // collections
     const reviewCollection = client.db("RoamRift").collection('reviews')
+    const wishListCollection = client.db("RoamRift").collection('wishlist')
+    const servicesCollection = client.db("RoamRift").collection('services')
 
-    //reviews
+    //reviews collections
     app.get('/reviews',async(req,res)=>{
         const result = await reviewCollection.find().toArray();
         res.send(result);
     })
+
+    //wishlist collections
+    app.post('/wishlist',async(req,res)=>{
+      const wishItem = req.body;
+      const result = await wishListCollection.insertOne(wishItem)
+      res.send(result)
+    })
+
+    //services collection
+    app.get('/services',async(req,res)=>{
+      const result = await servicesCollection.find().toArray();
+      // const  = await cursor.toArray();
+      res.send(result);
+  })
 
     // Send a ping to confirm a successful connection
     await client.db("admin").command({ ping: 1 });
