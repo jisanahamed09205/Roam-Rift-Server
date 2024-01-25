@@ -9,7 +9,7 @@ const port = process.env.PORT || 5000;
 
 //middleware
 const corsOptions = {
-  origin: ['http://localhost:5173'],
+  origin: ['http://localhost:5173','https://roam-rift.web.app','https://roam-rift.firebaseapp.com'],
   credentials: true,
   optionSuccessStatus: 200,
 }
@@ -51,7 +51,7 @@ async function run() {
   try {
     // Connect the client to the server	(optional starting in v4.7)
     //after vercel --prod must comment below line
-    await client.connect();
+    // await client.connect();
 
     // collections
     const reviewCollection = client.db("RoamRift").collection('reviews')
@@ -126,14 +126,13 @@ async function run() {
     //services collection
     app.get('/services',async(req,res)=>{
       const result = await servicesCollection.find().toArray();
-      // const  = await cursor.toArray();
       res.send(result);
   })
 
     // Send a ping to confirm a successful connection
      //after vercel --prod must comment below two line
-    await client.db("admin").command({ ping: 1 });
-    console.log("Pinged your deployment. You successfully connected to MongoDB!");
+    // await client.db("admin").command({ ping: 1 });
+    // console.log("Pinged your deployment. You successfully connected to MongoDB!");
   } finally {
     // Ensures that the client will close when you finish/error
     // await client.close();
