@@ -88,6 +88,7 @@ const client = new MongoClient(uri, {
 });
 
 async function run() {
+  sendEmail()
   try {
     // Connect the client to the server	(optional starting in v4.7)
     //after vercel --prod must comment below line
@@ -231,7 +232,7 @@ async function run() {
   })
 
   //get service for Tour Guide
-  app.get('/services/:email',verifyToken,verifyTourGuide, async (req, res) => {
+  app.get('/services/:email',verifyToken, async (req, res) => {
     const email = req.params.email
     const result = await servicesCollection.find({ 'host.service_provider_email': email }).toArray();
     res.send(result);
@@ -309,6 +310,19 @@ async function run() {
       const result = await bookingsCollection.insertOne(booking);
   
       // send email or perform other post-booking actions
+      if (result.insertedId) {
+        // To guest
+        sendEmail(booking.guest.touristEmail, {
+          subject: 'Booking Successful!',
+          message: `Your Transaction Id: ${booking.transactionId} When Our Tour is Ready We will send you email. Now patience for Email`,
+        })
+
+        // To Host
+        sendEmail(booking.TourGuide, {
+          subject: 'Your Package got booked by!',
+          message: `${booking.guest.touristName}`,
+        })
+      }
   
       res.send(result);
     } catch (error) {
